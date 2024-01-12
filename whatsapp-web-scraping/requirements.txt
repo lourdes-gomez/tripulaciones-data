@@ -1,0 +1,15 @@
+selenium==3.141.0
+urllib3==1.25.10
+selenium
+urllib3
+webdriver-manager
+lxml
+
+flask
+notebook
+pandas
+scikit-learn
+sqlalchemy
+matplotlib
+psycopg2-binary
+gunicorn
