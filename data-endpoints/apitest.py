@@ -2,9 +2,12 @@ import openai
 import typer
 from rich import print
 from rich.table import Table
+import os
 
 def main():
-    openai.api_key = "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"
+    archivo = "apikey.txt"
+    with open(archivo, "r") as apikey:
+        openai.api_key = apikey.read()
 
     print("💬 [bold green]ChatGPT API en Python[/bold green]")
 
