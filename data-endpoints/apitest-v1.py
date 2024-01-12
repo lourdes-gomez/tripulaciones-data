@@ -2,8 +2,6 @@ import openai
 import typer
 from rich import print
 from rich.table import Table
-import os
-
 
 def main():
     archivo = "apikey.txt"
@@ -32,7 +30,8 @@ def main():
         messages.append({"role": "user", "content": content})
 
         response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo", messages=messages)
+            model="gpt-3.5-turbo",  
+            messages=messages)
 
         response_content = response['choices'][0]['message']['content']
 
@@ -55,4 +54,3 @@ def __prompt() -> str:
 
 if __name__ == "__main__":
     typer.run(main)
-

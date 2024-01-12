@@ -6,3 +6,5 @@ sqlalchemy
 matplotlib
 psycopg2-binary
 gunicorn
+typer[all]
+openai==0.28
