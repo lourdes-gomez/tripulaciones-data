@@ -16,7 +16,7 @@ app = Flask(__name__)
 
 app.config['JSON_AS_ASCII'] = False
 
-engine = create_engine("sqlite:///./bbdd/db_final.db")
+engine = create_engine('postgresql://postgres:12345678@database-2.c0tj9rzcjeux.eu-north-1.rds.amazonaws.com:5432/postgres')
 
 def main():
     
