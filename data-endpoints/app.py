@@ -104,7 +104,7 @@ def main():
 @app.route('/api/incidencias', methods=['GET','POST'])
 def consulta():
     query = '''SELECT * FROM incidencias
-    WHERE (Categoría != 'No') AND ("Estado incidencia" = 'Recibida')'''
+    WHERE (incidencias."Categoría" != 'No') AND ("Estado incidencia" = 'Recibida')'''
 
     df = pd.read_sql(query, engine).drop(columns=["level_0"])
 
