@@ -8,5 +8,5 @@ psycopg2-binary
 gunicorn
 typer[all]
 openai==0.28
-re
+regex
 rich
