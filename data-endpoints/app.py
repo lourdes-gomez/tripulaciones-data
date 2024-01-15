@@ -10,7 +10,7 @@ import re
 import flask 
 from flask import Flask, jsonify
 import json
-from response import Response
+
 
 app = Flask(__name__)
 
@@ -124,4 +124,4 @@ def consulta():
 
 if __name__ == "__main__":
     # typer.run(main)
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=8000)
