@@ -1,150 +1,127 @@
-from flask import Flask, request, jsonify, render_template
+import openai
+import typer
+from rich import print
+from rich.table import Table
+import os
+import sqlite3
+from sqlalchemy import create_engine, text, update, MetaData, Table, Column, String
 import pandas as pd
-from datetime import datetime
-import pickle
-import matplotlib.pyplot as plt
-from sqlalchemy import create_engine, text
-import io
-from flask import Response
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-
-
-engine_postgres_aws = create_engine("postgresql://postgres:password24@database-2.cfux8oazuteg.eu-west-3.rds.amazonaws.com:5432/postgres")
-
-
-with open("pipe_model.pkl",  "rb") as f:
-    loaded_model = pickle.load(f)
-
+import re
+import flask 
+from flask import Flask, jsonify
+import json
+from response import Response
 
 app = Flask(__name__)
 
-@app.route("/", methods=["GET"])
-def guello():
-    return """<h1>Flask app desafío tripulaciones.</h1>
-('color_intensity' -> color, 
-('flavanoids' -> flav,
-('alcohol' -> alc,
-('proline' -> prol
-"""
+app.config['JSON_AS_ASCII'] = False
 
-@app.route("/predict", methods=["GET"])
-def predict_args():
+engine = create_engine("sqlite:///./bbdd/db_final.db")
+
+def main():
     
-    # Desde el body (notebook o postman):
-    color = request.get_json().get("color", None)
-    flav = request.get_json().get("flav", None)
-    alc = request.get_json().get("alc", None)
-    prol = request.get_json().get("prol", None)
-    
-    data2pred = [color, flav, alc, prol]
-    
-    # IF ARGS MISSING, ERROR 0
-    if None in data2pred:
-        return {"results": 0}
+    query = '''SELECT Incidencia FROM incidencias
+               WHERE (Categoría IS NULL) OR (Urgencia IS NULL)'''
 
-    # IF ANY VALUE NOT FLOAT, ERROR 1
-    if len(data2pred) != len([float(s) for s in data2pred if not s.isalpha()]):
-        return {"results": 1}
-    
-    # data2pred = [[5.0,2.0,13.0,746.0]]
-    # loaded_model.predict(data2pred)
+    result = pd.read_sql(query, engine).values
+    lista_inc = [elem[0] for elem in result]
 
+    for incidencia in lista_inc:
+        prompt = incidencia
 
-    inputs = str(data2pred)
-    output = loaded_model.predict([data2pred])[0]
-    fecha = str(datetime.now())[0:19]
+        archivo = "apikey.txt"
+        with open(archivo, "r") as apikey:
+            openai.api_key = apikey.read()
 
-    df = pd.DataFrame({
-        "fecha": [fecha],
-        "inputs": [inputs],
-        "prediction": [output]
-    })
-    
-    
-    df.to_sql("predictions", con=engine_postgres_aws, if_exists="append", index=None)
-    
-    return {"results": {"prediction": str(output)}}
-    
-@app.route("/check_logs", methods=["GET"])
-def check_logs():
-    
-    filter = False
-    start = request.args.get("start")
-    end = request.args.get("end")
-    filter = request.args.get("filter")
-    
-    # start = "2023-12-11 10:11:32"
-    # end = "2023-12-11 10:11:34"
-    if filter == True:
+        print("💬 [bold green]ChatGPT API en Python[/bold green]")
 
-        query = f"""
+        context = {"role": "system", "content": '''Responde con un máximo de 10 palabras. 
+                Voy a darte mensajes tipo de gente que expresa incidencias en una finca,  
+                quiero que lo categorices dentro de: 
+                [Ascensor, Tuberias/agua, Luz, Goteras, Humedades, Grietas, Suciedad, Ruidos, Conflicto Vecinal, No incidencia]
+                y le asignes un nivel de urgencia para resolver la urgencia de 1-5.
+                Responde en este formato: "Categoría: , Urgencia: "'''}
+        messages = [context]
 
-            select * from predictions
-            where fecha < "{end}"
-            and fecha > "{start}";
+        for _ in range(1):
+            content = prompt
 
-        """
-    else:
-        query = f"""
+            messages.append({"role": "user", "content": content})
 
-            select * from predictions """
-            
-    return pd.read_sql(query, con=engine_postgres_aws).to_html()
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo", messages=messages)
 
-@app.route("/fi")
-def fi():
-    datos_graph = pd.DataFrame(loaded_model["rfc"].feature_importances_, columns=["importance"], index=["color", "flav", "alc", "prol"]).sort_values("importance", ascending=False)
-    
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    axis.bar([x for x in datos_graph.index], [x[0] for x in datos_graph.values])
-    output = io.BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+            response_content = response['choices'][0]['message']['content']
+
+            messages.append({"role": "assistant", "content": response_content})
+
+            print(f"[bold green]> [/bold green] [green]{response_content}[/green]")
+
+        patron_categoria = r"Categoría: (\w+)"
+        patron_urgencia = r"Urgencia: (\d+)"
+
+        match_categoria = re.search(patron_categoria, response_content)
+        match_urgencia = re.search(patron_urgencia, response_content)
+
+        categoria = match_categoria.group(1) if match_categoria else None
+        urgencia = int(match_urgencia.group(1)) if match_urgencia else None
 
 
-@app.route("/predict_form", methods=["GET", "POST"])
-def predict_form():
-    if request.method == "POST":
-        color = request.form.get("color", None)
-        flav = request.form.get("flav", None)
-        alc = request.form.get("alc", None)
-        prol = request.form.get("prol", None)
+        mapeo_servicios = {
+        'Ascensor': 'Reparación ascensores',
+        'Ruidos': 'Servicios de emergencia',
+        'Tuberías': 'Fontanería',
+        'Goteras': 'Reparación instalaciones eléctricas',
+        'Humedades': 'Mantenimiento áreas comunes',
+        'Grietas': 'Pintura y reparación de paredes',
+        'Suciedad': 'Servicios de limpieza',
+        'No': None,  # Puedes asignar un servicio específico o dejarlo como None según tus necesidades
+        'Luz': 'Reparación instalaciones eléctricas',
+        'Tuberias': 'Fontanería',
+        'Aire': 'Mantenimiento calefacción y aire acondicionado',
+        'Conflicto': 'Colegio de administradores',
+        'Olores': 'Servicios de limpieza'
+        }
+
+        estado_inc = "Recibida"
+
+        query = '''
+            UPDATE incidencias
+            SET Categoría = :Categoría, Urgencia = :Urgencia, Servicio = :Servicio, "Estado incidencia" = :estado_inc
+            WHERE Incidencia = :Incidencia
+        '''
+
+        with engine.connect() as connection:
+            with connection.begin():  # Inicia una transacción
+                result = connection.execute(text(query), {'Categoría': categoria, 'Urgencia': urgencia, 'Incidencia': incidencia, 'Servicio':mapeo_servicios[categoria], "estado_inc":estado_inc})
+            print(f"Número de filas afectadas: {result.rowcount}")
+
+
+
+# if __name__ == "__main__":
+#     typer.run(main)
+
+@app.route('/api/incidencias', methods=['GET','POST'])
+def consulta():
+    query = '''SELECT * FROM incidencias
+    WHERE (Categoría != 'No') AND ("Estado incidencia" = 'Recibida')'''
+
+    df = pd.read_sql(query, engine).drop(columns=["level_0"])
+
+    # dict_columnas = {}
+
+    # for columna in df.columns:
+    #     dict_columnas[columna] = df[columna].tolist()
         
-        data2pred = [color, flav, alc, prol]
-        
-        # IF ARGS MISSING, ERROR 0
-        if None in data2pred:
-            return {"results": 0}
 
-        # IF ANY VALUE NOT FLOAT, ERROR 1
-        if len(data2pred) != len([float(s) for s in data2pred if not s.isalpha()]):
-            return {"results": 1}
-        
-        # data2pred = [[5.0,2.0,13.0,746.0]]
-        # loaded_model.predict(data2pred)
+    result = df.to_dict(orient='records')
+
+    # Usa el módulo json para serializar con ensure_ascii=False
+    json_result = json.dumps(result, ensure_ascii=False)
 
 
-        inputs = str(data2pred)
-        output = loaded_model.predict([data2pred])[0]
-        fecha = str(datetime.now())[0:19]
-
-        df = pd.DataFrame({
-            "fecha": [fecha],
-            "inputs": [inputs],
-            "prediction": [output]
-        })
-        
-        
-        df.to_sql("predictions", con=engine_postgres_aws, if_exists="append", index=None)
-    
-        return render_template("form.html", prediction = output)
-    
-    
-    return render_template("form.html", prediction = "N/A")
+    return json_result
 
 if __name__ == "__main__":
-	app.run(debug=True, port=8080)
-
-# app.run(debug=True, port=5000)
+    # typer.run(main)
+    app.run(debug=True, port=5000)
