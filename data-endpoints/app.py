@@ -11,17 +11,16 @@ import flask
 from flask import Flask, jsonify
 import json
 
-
 app = Flask(__name__)
 
 app.config['JSON_AS_ASCII'] = False
 
-engine = create_engine('postgresql://postgres:12345678@database-2.c0tj9rzcjeux.eu-north-1.rds.amazonaws.com:5432/postgres')
+engine = create_engine("sqlite:///./bbdd/db_final.db")
 
 def main():
     
-    query = '''SELECT Incidencia FROM incidencias
-               WHERE (Categoría IS NULL) OR (Urgencia IS NULL)'''
+    query = '''SELECT incidencias."Incidencia" FROM incidencias
+               WHERE (incidencias."Categoría" IS NULL) OR (incidencias."Urgencia" IS NULL)'''
 
     result = pd.read_sql(query, engine).values
     lista_inc = [elem[0] for elem in result]
@@ -87,13 +86,16 @@ def main():
 
         query = '''
             UPDATE incidencias
-            SET Categoría = :Categoría, Urgencia = :Urgencia, Servicio = :Servicio, "Estado incidencia" = :estado_inc
-            WHERE Incidencia = :Incidencia
+            SET "Categoría" = ?,
+                "Urgencia" = ?,
+                "Servicio" = ?,
+                "Estado incidencia" = ?
+            WHERE "Incidencia" = ?
         '''
 
         with engine.connect() as connection:
             with connection.begin():  # Inicia una transacción
-                result = connection.execute(text(query), {'Categoría': categoria, 'Urgencia': urgencia, 'Incidencia': incidencia, 'Servicio':mapeo_servicios[categoria], "estado_inc":estado_inc})
+                result = connection.execute(text(query), (categoria, urgencia, mapeo_servicios[categoria], estado_inc, incidencia))
             print(f"Número de filas afectadas: {result.rowcount}")
 
 
@@ -124,4 +126,4 @@ def consulta():
 
 if __name__ == "__main__":
     # typer.run(main)
-    app.run(debug=True, port=8000)
+    app.run(debug=True, port=5000)
