@@ -12,6 +12,7 @@ from flask import Flask, jsonify
 import json
 import time
 
+
 app = Flask(__name__)
 
 app.config['JSON_AS_ASCII'] = False
@@ -31,10 +32,10 @@ def main():
     for incidencia in lista_inc:
         prompt = incidencia
 
-        #archivo = "apikey.txt"
-        #with open(archivo, "r") as apikey:
-        #       openai.api_key = apikey.read()
-        #openai.api_key = 
+        archivo = "apikey.txt"
+        with open(archivo, "r") as apikey:
+            openai.api_key = apikey.read()
+
         print("💬 [bold green]ChatGPT API en Python[/bold green]")
 
         context = {"role": "system", "content": '''Responde con un máximo de 10 palabras. 
@@ -48,7 +49,8 @@ def main():
         for _ in range(1):
             content = prompt
 
-            messages.append({"role": "user", "content": content})  
+            messages.append({"role": "user", "content": content})
+
             response = openai.ChatCompletion.create(
                 model="gpt-3.5-turbo", messages=messages)
 
@@ -60,6 +62,7 @@ def main():
 
         patron_categoria = r"Categoría: (\w+)"
         patron_urgencia = r"Urgencia: (\d+)"
+
         match_categoria = re.search(patron_categoria, response_content)
         match_urgencia = re.search(patron_urgencia, response_content)
 
@@ -82,6 +85,7 @@ def main():
         'Conflicto': 'Colegio de administradores',
         'Olores': 'Servicios de limpieza'
         }
+
         estado_inc = "Por recibir"
 
         query = '''
@@ -97,7 +101,8 @@ def main():
             with connection.begin():  # Inicia una transacción
                 result = connection.execute(text(query), (categoria, urgencia, str(mapeo_servicios[categoria]), estado_inc, incidencia))
             print(f"Número de filas afectadas: {result.rowcount}")
-    return jsonify({"status": "success", "message": "Incidencias actualizadas correctamente"})
+
+
 
 # if __name__ == "__main__":
 #     typer.run(main)
@@ -113,12 +118,13 @@ def consulta():
 
     # for columna in df.columns:
     #     dict_columnas[columna] = df[columna].tolist()
-
+        
 
     result = df.to_dict(orient='records')
 
     # Usa el módulo json para serializar con ensure_ascii=False
     json_result = json.dumps(result, ensure_ascii=False)
+
 
     return json_result
 
@@ -137,6 +143,7 @@ def consulta_fincas():
 
 
     return json_result
+
 
 @app.route('/api/proveedores', methods=['GET','POST'])
 def consulta_prov():
