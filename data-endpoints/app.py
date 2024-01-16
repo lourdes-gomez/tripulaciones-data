@@ -128,6 +128,38 @@ def consulta():
 
     return json_result
 
+
+@app.route('/api/fincas', methods=['GET','POST'])
+def consulta_fincas():
+    query = '''SELECT * FROM fincas
+    '''
+
+    df = pd.read_sql(query, engine).drop(columns=["level_0"])
+
+    result = df.to_dict(orient='records')
+
+    # Usa el módulo json para serializar con ensure_ascii=False
+    json_result = json.dumps(result, ensure_ascii=False)
+
+
+    return json_result
+
+
+@app.route('/api/proveedores', methods=['GET','POST'])
+def consulta_prov():
+    query = '''SELECT * FROM proveedores
+    '''
+
+    df = pd.read_sql(query, engine)
+
+    result = df.to_dict(orient='records')
+
+    # Usa el módulo json para serializar con ensure_ascii=False
+    json_result = json.dumps(result, ensure_ascii=False)
+
+
+    return json_result
+
 if __name__ == "__main__":
     # typer.run(main)
     app.run(debug=True, port=8000)
