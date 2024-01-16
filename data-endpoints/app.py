@@ -10,17 +10,21 @@ import re
 import flask 
 from flask import Flask, jsonify
 import json
+import time
+
 
 app = Flask(__name__)
 
 app.config['JSON_AS_ASCII'] = False
 
-engine = create_engine("sqlite:///./bbdd/db_final.db")
+# engine = create_engine("sqlite:///./bbdd/db_final.db")
+engine = create_engine("postgresql://postgres:12345678@database-2.c0tj9rzcjeux.eu-north-1.rds.amazonaws.com:5432/postgres")
 
+@app.route('/api/actualizar', methods=['GET','POST'])
 def main():
     
     query = '''SELECT incidencias."Incidencia" FROM incidencias
-               WHERE (incidencias."Categoría" IS NULL) OR (incidencias."Urgencia" IS NULL)'''
+            WHERE (incidencias."Categoría" IS NULL) OR (incidencias."Urgencia" IS NULL)'''
 
     result = pd.read_sql(query, engine).values
     lista_inc = [elem[0] for elem in result]
@@ -126,4 +130,4 @@ def consulta():
 
 if __name__ == "__main__":
     # typer.run(main)
-    app.run(debug=True, port=5000)
+    app.run(debug=True, port=8000)
