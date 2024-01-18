@@ -202,7 +202,7 @@ def main():
 
     # Código que conecta con api de ChatGPT y categoriza la incidencia:
 
-        openai.api_key = ''
+        openai.api_key = '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'
 
         print("💬 [bold green]ChatGPT API en Python[/bold green]")
 
