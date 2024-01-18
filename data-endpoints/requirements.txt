@@ -8,5 +8,6 @@ psycopg2-binary
 gunicorn
 typer[all]
 openai==0.28
-regex
-rich
+whatsapp-web
+selenium
+pywhatkit
