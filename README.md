@@ -32,6 +32,6 @@ Para este proyecto hemos utilizado las siguientes librerías de python : <br>
 - Re
 
 ## Dashboard de todas las incidencias registradas<br>
-Con este dashboard pretendemos que el administrador pueda acceder en tiempo real a todas las incidencias clasificadas por categorias, en qué fincas<br>
-se producen y en qué meses del año se registran mas incidencias. Este dashboard permite crear un informe automático de todo el trabajo que realiza<br>
-un administrador de fincas automatizando sus tareas y ahorrándole tiempo.<br>
+Con este dashboard pretendemos que el administrador pueda acceder en tiempo real a todas las incidencias clasificadas por categorias,<br> 
+en qué fincas se producen y en qué meses del año se registran mas incidencias. Este dashboard permite crear un informe automático de<br> 
+todo el trabajo que realiza un administrador de fincas automatizando sus tareas y ahorrándole tiempo.<br>
