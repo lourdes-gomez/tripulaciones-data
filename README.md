@@ -12,9 +12,9 @@ tiene que devolver, en este caso los mensajes son incidencias que notifican prop
 categoría de la incidencia y el nivel de urgencia de la incidencia. Estos datos se envían a la app FincUp para que el administrador tenga un<br>
 resumen de todas las incidencias de todas su fincas.<br>
 Para este proyecto hemos creado una API con Flask y una base de datos PostgreSQL. Hemos utilizado las siguientes librerías de python : <br>
-* Openai&nbsp;&nbsp;&nbsp;            * Sqlite3
-* Rich&nbsp;&nbsp;&nbsp;              * Pandas
-* Sqlalchemy&nbsp;&nbsp;&nbsp;        * Flask
+- Openai&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;            - Sqlite3
+- Rich&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              - Pandas
+- Sqlalchemy&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;        - Flask
   
 
 
