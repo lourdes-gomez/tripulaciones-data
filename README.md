@@ -22,8 +22,8 @@ Para este proyecto hemos creado una API con Flask y una base de datos PostgreSQL
 - Rich
 
 ## Modelo de análisis de sentimiento de feedback de los propietarios <br>
-Mediante técnicas de NLP (Natural Language Processing) se puede analizar y automatizar el proceso de feedback para averiguar en cada momento <br>
-si la gestión de la finca se está llevando a cabo satisfactoriamente. Este modelo nos indica el índice de satisfacción de los propietarios de <br>
+Mediante técnicas de NLP (Natural Language Processing) se puede analizar y automatizar el proceso de feedback para averiguar en cada momento<br>
+si la gestión de la finca se está llevando a cabo satisfactoriamente. Este modelo nos indica el índice de satisfacción de los propietarios de<br>
 la comunidad con la gestión de los administradores de fincas.<br>
 
 Para este proyecto hemos utilizado las siguientes librerías de python : <br> 
