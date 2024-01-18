@@ -22,8 +22,8 @@ Para este proyecto hemos creado una API con Flask y una base de datos PostgreSQL
 - Rich
 
 ## Modelo de análisis de sentimiento de feedback de los propietarios <br>
-Mediante técnicas de NLP (Natural Language Processing) se puede analizar y automatizar el proceso de feedback para averiguar<br>  
-en cada momento si la gestión de la finca se está llevando a cabo satisfactoriamente. Este modelo nos indica el índice de<br>  
+Mediante técnicas de NLP (Natural Language Processing) se puede analizar y automatizar el proceso de feedback para averiguar 
+en cada momento si la gestión de la finca se está llevando a cabo satisfactoriamente. Este modelo nos indica el índice de  
 satisfacción de los propietarios de la comunidad con la gestión de los administradores de fincas.<br>
 
 Para este proyecto hemos utilizado las siguientes librerías de python : <br> 
@@ -32,6 +32,6 @@ Para este proyecto hemos utilizado las siguientes librerías de python : <br>
 - Re
 
 ## Dashboard de todas las incidencias registradas<br>
-Con este dashboard pretendemos que el administrador pueda acceder en tiempo real a todas las incidencias clasificadas por<br>  
-categorias,en qué fincas se producen y en qué meses del año se registran mas incidencias. Este dashboard permite crear un<br>  
-informe automático de todo el trabajo que realiza un administrador de fincas automatizando sus tareas y ahorrándole tiempo.<br>
+Con este dashboard pretendemos que el administrador pueda acceder en tiempo real a todas las incidencias clasificadas por 
+categorias,en qué fincas se producen y en qué meses del año se registran mas incidencias. Este dashboard permite crear un  
+informe automático de todo el trabajo que realiza un administrador de fincas automatizando sus tareas y ahorrándole tiempo.
