@@ -9,8 +9,8 @@ verticales (UX/UI y Full-Stack) se han definido las siguientes funcionalidades p
 ## Integración de una Inteligencia Artificial para procesar mensajes de Whatsapp <br>
 Mediante técnicas de web scraping se extraen los mensajes de la aplicación whatsapp y se almacenan en una base de datos.<br> 
 Estos mensajes se envían a la API de ChatGPT junto con un prompt donde especificamos como queremos que se procesen estos mensajes<br> 
-y qué información nos tiene que devolver, en este caso los mensajes son incidencias que notifican propietarios en una comunidad de FincUp <br> 
-vecinos y ChatGPT nos devuelve la categoría de la incidencia y el nivel de urgencia de la incidencia. Estos datos se envían a la app<br>
+y qué información nos tiene que devolver, en este caso los mensajes son incidencias que notifican propietarios en una comunidad de<br> 
+vecinos y ChatGPT nos devuelve la categoría de la incidencia y el nivel de urgencia de la incidencia. Estos datos se envían a la app FincUp<br>
 para que el administrador tenga un resumen de todas las incidencias de todas su fincas.<br>
 
 Para este proyecto hemos creado una API con Flask y una base de datos PostgreSQL. Hemos utilizado las siguientes librerías de python : <br>
