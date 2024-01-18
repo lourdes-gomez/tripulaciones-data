@@ -2,8 +2,8 @@
 
 En este repositorio se recoge el trabajo realizado para el desafío de tripulaciones del bootcamp de TheBridge.<br>
 
-El proyecto consiste en una aplicación web que facilite el trabajo diario a los administradores de fincas,<br>
-junto con el resto de verticales (UX/UI y Full-Stack) se han definido las siguientes funcionalidades para la aplicación.<br>
+El proyecto consiste en una aplicación web que facilite el trabajo diario a los administradores de fincas, junto con el resto de<br>
+verticales (UX/UI y Full-Stack) se han definido las siguientes funcionalidades para la aplicación.<br>
 
 
 ## Integración de una Inteligencia Artificial para procesar mensajes de Whatsapp <br>
